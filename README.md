@@ -5,15 +5,15 @@
 # Passo a passo
 
 ## construindo container docker
-```docker build -t search_cep . ```
+    ```docker build -t search_cep . ```
 
 ## rodando container com argumentos de busca 
 
 ### caso deseja pesquisa uma lista especifica de estados, definir utilizando a variavel states
-   ``` docker run -e states="GO, DF, MA, SP" -v $(pwd)/resultados:/app/resultados search_cep``` 
+    ```docker run -e states="GO, DF, MA, SP" -v $(pwd)/resultados:/app/resultados search_cep``` 
 
 ### para puxar todos os estados, nao definir nada
-    ``` docker run -v $(pwd)/resultados:/app/resultados search_cep``` 
+    ```docker run -v $(pwd)/resultados:/app/resultados search_cep``` 
 
 # diretorio
 
