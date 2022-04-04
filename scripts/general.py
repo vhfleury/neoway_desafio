@@ -1,5 +1,6 @@
 import var
 import json
+import hashlib
 
 def created_payload(states: str, ini: int) -> dict:
     """Returns the payload necessary for the request on the post office website. 
@@ -60,10 +61,10 @@ def organize_table(table: list, init: bool) -> dict:
     new_table = dict()
 
     # pulling all texts inside xpath results list
-    rows = [n.get() for n in table]
+    list_result_table = [n.get() for n in table]
 
     if init:
-        new_table.update({rows[0]: rows[1]})
+        new_table.update({list_result_table[0]: list_result_table[1]})
 
         # the first two indexes of a search are search state information
         start = 2
@@ -72,8 +73,8 @@ def organize_table(table: list, init: bool) -> dict:
         start = 0
 
     # each row of the courier table contains 4 columns
-    new_table.update({rows[n]: rows[n+1] for n in range(start,
-                     len(rows), 4) if (rows[n+3] == "Total do município")})
+    new_table.update({list_result_table[n]: list_result_table[n+1] for n in range(start,
+                     len(list_result_table), var.tabale_rows_results) if (list_result_table[n+3] == "Total do município")})
 
     return new_table
 
@@ -97,7 +98,7 @@ def get_states(states: str or None) -> list:
     return states
 
 
-def format_result(results: list) -> dict:
+def output_jsonl(results: list) -> dict:
     """format and save result to standard jsonl output
 
     Parameters:
@@ -107,8 +108,51 @@ def format_result(results: list) -> dict:
         None 
     """
     
-    with open(var.name_file, 'w') as outfile:
-        for citys in results:
-            json.dump(citys, outfile)
-            outfile.write('\n')
+    ids_export = set()
 
+    with open(var.name_file, 'w') as outfile:
+        for city in results:
+
+            id = city["id"]
+            
+            if id not in ids_export:
+                json.dump(city, outfile)
+                outfile.write('\n')
+
+
+
+def result_to_dict(organize_table:dict, state:str) -> list:
+    """format results in dict and create id
+
+    Parameters:
+        organize_table (dict): with key is the city and value is range zip code
+
+    Returns:
+        results (list): lista de dicionario com as informacoes coletadas 
+    """
+    results = list()
+
+    for city, cep in organize_table.items():
+        
+        values_search_str = "".join([state, city, cep])
+        id = hashlib.md5(values_search_str.encode('utf-8')).hexdigest()
+
+        results.append({"id":id,
+                "estado": state,
+                "localidade": city,
+                "faixa de cep":cep
+            })
+
+    return results
+
+
+def next_page(len_table:int):
+    """metodo verifica se tem uma proxima pagina para puxar mais dados 
+
+    Parameters:
+        len_table (int): with key is the city and value is range zip code
+
+    Returns:
+        bool : retorna True se existe uma proxima pagina
+    """
+    return len_table > (var.tabale_rows_results*var.qtdrow) - (var.tabale_rows_results+1)
