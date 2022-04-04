@@ -5,7 +5,7 @@
 # Passo a passo
 
 ## construindo container docker
-    ```docker build -t search_cep . ```
+    docker build -t search_cep . 
 
 ## rodando container com argumentos de busca 
 
@@ -13,7 +13,7 @@
     docker run -e states="GO, DF, MA, SP" -v $(pwd)/resultados:/app/resultados search_cep 
 
 ### para puxar todos os estados, nao definir nada
-    ```docker run -v $(pwd)/resultados:/app/resultados search_cep``` 
+    docker run -v $(pwd)/resultados:/app/resultados search_cep 
 
 # diretorio
 
@@ -23,6 +23,7 @@
 - scripts/var.py: arquivo python contendo as variaveis utilizados
 - scripts/general.py: arquivo python contendo as funcoes secundarias
 - scripts/cep_spider.py: arquivo python com o crawler de raspagem dos CEPs
+- scripts/test_general.py: arquivo python de teste de algumas funcoes secundarias 
 
 - dockerfile: arquivo docker com a imagem do projeto
 - output_file.png: imagem contendo um sample da saida do crawler
@@ -30,8 +31,6 @@
 
 # sample saida
 
-- data: lista de dicionarios com informacoes de "id", "estado", "localidade", "faixa de cep"
-- extract_at: horario da extrracao dos dados 
-- len_results: quantidados de registros salvados
+- lista de dicionarios com informacoes de "id", "estado", "localidade", "faixa de cep"
 
 ![](/output_file.png) 
