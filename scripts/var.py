@@ -32,3 +32,6 @@ qtdrow = 100
 
 # initial value of the states search page
 start_value = 1
+
+# quantidade de colunas que existe na tabela do resultado da busca
+tabale_rows_results = 4
