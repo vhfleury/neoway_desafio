@@ -1,6 +1,7 @@
 import var
 import json
 import hashlib
+import unidecode
 
 def created_payload(states: str, ini: int) -> dict:
     """Returns the payload necessary for the request on the post office website. 
@@ -61,7 +62,7 @@ def organize_table(table: list, init: bool) -> dict:
     new_table = dict()
 
     # pulling all texts inside xpath results list
-    list_result_table = [n.get() for n in table]
+    list_result_table = [n.get().strip() for n in table]
 
     if init:
         new_table.update({list_result_table[0]: list_result_table[1]})
@@ -110,7 +111,7 @@ def output_jsonl(results: list) -> dict:
     
     ids_export = set()
 
-    with open(var.name_file, 'w') as outfile:
+    with open(var.name_file, 'w', encoding="latin-1") as outfile:
         for city in results:
 
             id = city["id"]
@@ -139,7 +140,7 @@ def result_to_dict(organize_table:dict, state:str) -> list:
 
         results.append({"id":id,
                 "estado": state,
-                "localidade": city,
+                "localidade": unidecode.unidecode(city),
                 "faixa de cep":cep
             })
 
